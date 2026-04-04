@@ -1,12 +1,14 @@
 from django.urls import path
 
+from .views import insert_data
 from . import views
 
 urlpatterns = [
-
     #path("", views.connection, name="connection"),
     path("", views.connexion, name="connexion"),
     path('Dashboard/', views.Dashboard, name='Dashboard'),
+    path('insert/', insert_data, name='insert_data'),
+
     #path('formulairemanuscrit/',views.formulairemanuscrit,name='formulairemanuscrit'),
    # path("datah", views.datatables, name="datah"),
     #path('logout', views.logout_view, name='logout'),

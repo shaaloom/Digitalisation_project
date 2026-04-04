@@ -1,3 +1,11 @@
-from django.db import models
+from mongoengine import Document, EmbeddedDocument, StringField, EmbeddedDocumentField
 
-# Create your models here.
+class Chef(EmbeddedDocument):
+    nom = StringField()
+    prenom = StringField()
+
+class Village(Document):
+    nom_village = StringField()
+    region = StringField()
+    departement = StringField()
+    chef = EmbeddedDocumentField(Chef)
