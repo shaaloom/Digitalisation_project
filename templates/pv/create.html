@@ -1,0 +1,717 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block sidebar_class %}sidebar sidebar-style-2{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="panel-header bg-primary-gradient">
+        <div class="page-inner py-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                <div>
+                    <h2 class="text-white fw-bold">Procès-Verbal de Village</h2>
+                    <h5 class="text-white op-7 mb-0">Enregistrement des informations d'un village</h5>
+                </div>
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="{% url 'Dashboard' %}" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-arrow-left mr-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-inner mt--4">
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle mr-2"></i> {{ success }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+
+        <form method="post" id="pvForm">
+            {% csrf_token %}
+
+            <!-- SECTION 1 : ADMINISTRATIF -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secAdmin" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-map-marked-alt text-primary mr-2"></i>
+                            Informations administratives
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secAdmin" class="collapse show">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Région</label>
+                                    <input type="text" class="form-control" name="region"
+                                           placeholder="Ex: Guémon">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Département <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="departement" required
+                                           placeholder="Ex: Guemon">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Sous-préfecture</label>
+                                    <input type="text" class="form-control" name="sous_prefecture"
+                                           placeholder="Ex: Duekoué">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Village <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="village" required
+                                           placeholder="Ex: Zouan">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : ENQUÊTE -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secEnquete" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-clipboard-list text-success mr-2"></i>
+                            Enquête
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secEnquete" class="collapse">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Commissaire enquêteur</label>
+                                    <input type="text" class="form-control" name="commissaire_enqueteur"
+                                           placeholder="Nom du commissaire">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Date d'enquête</label>
+                                    <input type="date" class="form-control" name="date_enquete">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3 : DÉCLARANT -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secDeclarant" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-user-tie text-info mr-2"></i>
+                            Déclarant
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secDeclarant" class="collapse">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" class="form-control" name="declarant_nom" placeholder="Nom">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Prénom</label>
+                                    <input type="text" class="form-control" name="declarant_prenom" placeholder="Prénom">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Date de naissance</label>
+                                    <input type="date" class="form-control" name="declarant_date_naissance">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Lieu de naissance</label>
+                                    <input type="text" class="form-control" name="declarant_lieu_naissance"
+                                           placeholder="Lieu de naissance">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Qualité</label>
+                                    <select class="form-control" name="declarant_qualite">
+                                        <option value="">-- Sélectionner --</option>
+                                        <option value="Chef de village">Chef de village</option>
+                                        <option value="Chef de terre">Chef de terre</option>
+                                        <option value="Notable">Notable</option>
+                                        <option value="Sage">Sage</option>
+                                        <option value="Habitant">Habitant</option>
+                                        <option value="Autre">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Résidence</label>
+                                    <input type="text" class="form-control" name="declarant_residence"
+                                           placeholder="Lieu de résidence">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4 : HISTORIQUE -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secHistorique" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-history text-warning mr-2"></i>
+                            Historique du village
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secHistorique" class="collapse">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Signification du nom</label>
+                            <input type="text" class="form-control" name="signification_nom"
+                                   placeholder="Signification du nom du village">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Fondateur</label>
+                                    <input type="text" class="form-control" name="fondateur" placeholder="Nom du fondateur">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Activité du fondateur</label>
+                                    <input type="text" class="form-control" name="activite_fondateur"
+                                           placeholder="Activité principale">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Lieu d'inhumation</label>
+                                    <input type="text" class="form-control" name="lieu_inhumation"
+                                           placeholder="Lieu d'inhumation">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Origine du fondateur</label>
+                                    <input type="text" class="form-control" name="origine_fondateur"
+                                           placeholder="Origine">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Personnes trouvées sur place</label>
+                                    <input type="text" class="form-control" name="personnes_trouvees"
+                                           placeholder="Qui ?">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Accords avec les populations</label>
+                                    <input type="text" class="form-control" name="accords_populations"
+                                           placeholder="Type d'accords">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Époque d'installation</label>
+                                    <input type="text" class="form-control" name="epoque_installation"
+                                           placeholder="Ex: XVIIIe siècle">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Villages voisins (séparés par des virgules)</label>
+                                    <input type="text" class="form-control" name="villages_voisins"
+                                           placeholder="Village A, Village B, ...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Regroupements de villages (séparés par des virgules)</label>
+                                    <input type="text" class="form-control" name="regroupement_villages"
+                                           placeholder="Groupe A, Groupe B, ...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5 : LIGNAGES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secLignages" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-sitemap text-secondary mr-2"></i>
+                            Lignages
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secLignages" class="collapse">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="lignagesTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th style="width:40%">Nom du lignage</th>
+                                    <th style="width:40%">Ordre d'arrivée</th>
+                                    <th style="width:20%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lignagesContainer">
+                                <tr class="dynamic-row">
+                                    <td>
+                                        <input type="text" class="form-control" name="lignage_nom[]" placeholder="Nom">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="lignage_ordre[]" placeholder="Ordre" min="1">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addRow('lignagesContainer')">
+                            <i class="fas fa-plus mr-1"></i> Ajouter un lignage
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6 : CHEFS -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secChefs" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-crown text-warning mr-2"></i>
+                            Chefs du village
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secChefs" class="collapse">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="chefsTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Début de règne</th>
+                                    <th>Fin de règne</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chefsContainer">
+                                <tr class="dynamic-row">
+                                    <td>
+                                        <input type="text" class="form-control" name="chef_nom[]" placeholder="Nom">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="chef_prenom[]" placeholder="Prénom">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" name="chef_debut_regne[]">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" name="chef_fin_regne[]">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addRow('chefsContainer')">
+                            <i class="fas fa-plus mr-1"></i> Ajouter un chef
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 7 : CAMPEMENTS -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secCampements" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-tent text-success mr-2"></i>
+                            Campements
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secCampements" class="collapse">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="campementsTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Origine de la population</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campementsContainer">
+                                <tr class="dynamic-row">
+                                    <td>
+                                        <input type="text" class="form-control" name="campement_nom[]" placeholder="Nom">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="campement_origine[]" placeholder="Origine">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addRow('campementsContainer')">
+                            <i class="fas fa-plus mr-1"></i> Ajouter un campement
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 8 : SITES D'ADORATION -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secSites" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-place-of-worship text-danger mr-2"></i>
+                            Sites d'adoration
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secSites" class="collapse">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="sitesTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Type de site</th>
+                                    <th>Localisation</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sitesContainer">
+                                <tr class="dynamic-row">
+                                    <td>
+                                        <select class="form-control" name="site_type[]">
+                                            <option value="">-- Type --</option>
+                                            <option value="Forêt">Forêt</option>
+                                            <option value="Colline">Colline</option>
+                                            <option value="Rivière">Rivière</option>
+                                            <option value="Arbre">Arbre</option>
+                                            <option value="Autre">Autre</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="site_localisation[]" placeholder="Localisation">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addRow('sitesContainer')">
+                            <i class="fas fa-plus mr-1"></i> Ajouter un site
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 9 : LIMITES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secLimites" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-border-all text-info mr-2"></i>
+                            Limites territoriales
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secLimites" class="collapse">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="limitesTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Description (rivière, arbre, colline...)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="limitesContainer">
+                                <tr class="dynamic-row">
+                                    <td>
+                                        <input type="text" class="form-control" name="limite_description[]" placeholder="Ex: Rivière Comoé">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addRow('limitesContainer')">
+                            <i class="fas fa-plus mr-1"></i> Ajouter une limite
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 10 : MODE ACCÈS TERRE -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secAcces" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-tree text-success mr-2"></i>
+                            Mode d'accès à la terre
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secAcces" class="collapse">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Mode d'accès principal</label>
+                                    <select class="form-control" name="mode_acces_principal">
+                                        <option value="">-- Sélectionner --</option>
+                                        <option value="heritage">Héritage</option>
+                                        <option value="don">Don</option>
+                                        <option value="pret">Prêt</option>
+                                        <option value="achat">Achat</option>
+                                        <option value="location">Location</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Présence d'un chef de terre</label>
+                                    <select class="form-control" name="chef_de_terre">
+                                        <option value="">-- Sélectionner --</option>
+                                        <option value="oui">Oui</option>
+                                        <option value="non">Non</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Zones litigieuses / conflits</label>
+                                    <select class="form-control" name="zones_litigieuses">
+                                        <option value="">-- Sélectionner --</option>
+                                        <option value="oui">Oui</option>
+                                        <option value="non">Non</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 11 : INFOS COMPLÉMENTAIRES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secComplement" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-sticky-note text-secondary mr-2"></i>
+                            Informations complémentaires
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secComplement" class="collapse">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <textarea class="form-control" name="informations_complementaires"
+                                      rows="4" placeholder="Autres informations..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 12 : PERSONNES PRÉSENTES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secPersonnes" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title">
+                            <i class="fas fa-users text-primary mr-2"></i>
+                            Personnes présentes (Annexe)
+                        </div>
+                        <div class="card-tools">
+                            <i class="fas fa-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="secPersonnes" class="collapse">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="personnesTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Qualité</th>
+                                    <th>Âge</th>
+                                    <th>Résidence</th>
+                                    <th>Signature</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="personnesContainer">
+                                <tr class="dynamic-row">
+                                    <td>
+                                        <input type="text" class="form-control" name="personne_nom[]" placeholder="Nom">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="personne_prenom[]" placeholder="Prénom">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="personne_qualite[]" placeholder="Qualité">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="personne_age[]" placeholder="Âge" min="0">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="personne_residence[]" placeholder="Résidence">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="personne_signature[]" placeholder="Signature">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addRow('personnesContainer')">
+                            <i class="fas fa-plus mr-1"></i> Ajouter une personne
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <button type="submit" class="btn btn-success btn-lg btn-round" style="padding: 12px 50px;">
+                        <i class="fas fa-save mr-2"></i> Enregistrer le Procès-Verbal
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg btn-round" style="padding: 12px 40px;">
+                        <i class="fas fa-undo mr-2"></i> Réinitialiser
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+function addRow(containerId) {
+    var container = document.getElementById(containerId);
+    var template = container.querySelector('.dynamic-row');
+    if (!template) return;
+    var clone = template.cloneNode(true);
+    var inputs = clone.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(input) { input.value = ''; });
+    if (clone.querySelector('select')) {
+        clone.querySelectorAll('select').forEach(function(sel) { sel.selectedIndex = 0; });
+    }
+    container.appendChild(clone);
+}
+
+function removeRow(btn) {
+    var row = btn.closest('tr');
+    var container = row.closest('tbody');
+    var rows = container.querySelectorAll('.dynamic-row');
+    if (rows.length <= 1) {
+        var inputs = row.querySelectorAll('input, select');
+        inputs.forEach(function(input) { input.value = ''; });
+        if (row.querySelector('select')) {
+            row.querySelectorAll('select').forEach(function(sel) { sel.selectedIndex = 0; });
+        }
+        return;
+    }
+    row.parentNode.removeChild(row);
+}
+</script>
+{% endblock %}

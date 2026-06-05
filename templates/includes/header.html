@@ -1,0 +1,56 @@
+{% load static %}
+<div class="main-header">
+        <!-- Logo Header -->
+        <div class="logo-header" data-background-color="dark2">
+            <a href="https://www.afor.ci/public/index.php" class="logo">
+                <img src="{% static 'images/logo.jpg' %}" alt="..." class="avatar-img rounded-circle">
+            </a>
+            <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+
+                    <i class="icon-menu"></i>
+
+                </span>
+            </button>
+            <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+            <div class="nav-toggle">
+                <button class="btn btn-toggle sidenav-overlay-toggler">
+
+                    <i class="icon-menu"></i>
+
+                </button>
+            </div>
+        </div>
+        <!-- End Logo Header -->
+
+        <!-- Navbar Header -->
+        <nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark">
+
+            <div class="container-fluid">
+                <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                    <li class="nav-item toggle-nav-search hidden-caret">
+                        <a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+                            <i class="fa fa-search"></i>
+                        </a>
+                    </li>
+
+
+                          <div class="ml-md-auto py-2 py-md-0">
+                           {% if  user.is_authenticated  %}
+                    <a href="{% url 'logout' %}" class="btn btn-white btn-border btn-round mr-2">déconnexion</a>
+                </div>
+                 {% endif %}
+
+                    <li class="nav-item dropdown hidden-caret">
+
+                            <div class="avatar-sm">
+                                <img src="{% static 'images/dra.png' %}" alt="..." class="avatar-img rounded-circle">
+                            </div>
+
+
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+    </div>

@@ -1,20 +1,25 @@
-#from mongoengine import Document, EmbeddedDocument, StringField, EmbeddedDocumentField
-
-#class Chef(EmbeddedDocument):
-    #nom = StringField()
-    #prenom = StringField()
-
-#class Village(Document):
-   # nom_village = StringField()
-    #region = StringField()
-   # departement = StringField()
-   # chef = EmbeddedDocumentField(Chef)
 
 from mongoengine import (
     Document, EmbeddedDocument,
     StringField, DateField, IntField,
     ListField, EmbeddedDocumentField, BooleanField
 )
+
+
+class Utilisateur(Document):
+    username = StringField(required=True, unique=True, max_length=150)
+    password = StringField(required=True)
+    nom = StringField()
+    prenom = StringField()
+    email = StringField()
+    role = StringField(default='utilisateur')
+    est_actif = BooleanField(default=True)
+    date_creation = DateField()
+    deriere_connexion = DateField()
+
+    meta = {
+        "collection": "utilisateurs"
+    }
 
 # -----------------------------
 # PERSONNE
@@ -122,6 +127,7 @@ class HistoriqueVillage(EmbeddedDocument):
 class ProcesVerbalVillage(Document):
 
     # informations administratives
+    region = StringField()
     departement = StringField(required=True)
     sous_prefecture = StringField()
     village = StringField(required=True)

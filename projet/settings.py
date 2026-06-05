@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',# nous avons ajouter app après avoir executé la commande (django-admin startapp app ) parce qu'il s'agit d'une application
+    'app',
 ]
 
 MIDDLEWARE = [

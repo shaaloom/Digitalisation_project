@@ -1,0 +1,180 @@
+{% load static %}
+<div class="sidebar-wrapper scrollbar scrollbar-inner bg-dark2">
+    <div class="sidebar-content">
+
+        <ul class="nav nav-primary">
+            <li class="nav-item active">
+                <a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
+                    <i class="fas fa-home"></i>
+                    <p>Dashboard</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="dashboard">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="{% url 'Dashboard' %}">
+                                <span class="sub-item">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                    <i class="fa fa-ellipsis-h"></i>
+                </span>
+                <h4 class="text-section">Components</h4>
+            </li>
+            <!-- <li class="nav-item">
+                <a data-toggle="collapse" href="#sidebarLayouts">
+                    <i class="fas fa-th-list"></i>
+                    <p>Sidebar Layouts</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="sidebarLayouts">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Sidebar Style 1</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Overlay Sidebar</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Compact Sidebar</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Static Sidebar</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Icon Menu</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>  -->
+
+
+            <li class="nav-item">
+                <a data-toggle="collapse" href="#forms">
+                    <i class="fas fa-pen-square"></i>
+                    <p>Formulaires</p>
+                    <span class="caret"></span>
+              </a>
+                <div class="collapse" id="forms">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="{% url 'creer_pv' %}">
+                                <span class="sub-item">Procès-Verbal Village</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="collapse" href="#tables">
+                    <i class="fas fa-table"></i>
+                    <p>Tables</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="tables">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Table-Histoire</span>
+                            </a>
+                        </li>
+                       <!-- <li>
+                            <a href="">
+                                <span class="sub-item">data-projet2</span>
+                            </a>
+                        </li>  -->
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="collapse" href="#maps">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>Régions</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="maps">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Statistics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="collapse" href="#charts">
+                    <i class="far fa-chart-bar"></i>
+                    <p>Machine Learning</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="charts">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Clusters1</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="sub-item">Cluster2</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+       <!--     <li class="nav-item">
+                <a href="">
+                    <i class="fas fa-desktop"></i>
+                    <p>Widgets</p>
+                    <span class="badge badge-success">4</span>
+                </a>
+            </li>  -->
+
+
+            <li class="nav-item">
+                <a data-toggle="collapse" href="#submenu">
+                    <i class="fas fa-bars"></i>
+                    <p>IA</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="submenu">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a data-toggle="collapse" href="#subnav1">
+                                <span class="sub-item">IA1</span>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="subnav1">
+                                <ul class="nav nav-collapse subnav">
+                                    <li>
+                                        <a href="#">
+                                            <span class="sub-item">IA2</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
