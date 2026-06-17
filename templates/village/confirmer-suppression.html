@@ -1,0 +1,56 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <div class="panel-header bg-danger-gradient">
+        <div class="page-inner py-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                <div>
+                    <h2 class="text-white fw-bold">Supprimer un village</h2>
+                </div>
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="{% url 'liste_villages' %}" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-arrow-left mr-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-inner mt--4">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <h3 class="mb-3">Êtes-vous sûr de vouloir supprimer ce village ?</h3>
+                <p class="text-muted mb-4">
+                    Cette action est irréversible. Toutes les données associées à <strong>{{ pv.village }}</strong>
+                    ({{ pv.departement }}, {{ pv.sous_prefecture }}) seront définitivement effacées.
+                </p>
+
+                <div class="card bg-light text-left mb-4 mx-auto" style="max-width: 500px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Récapitulatif</h5>
+                        <p><strong>Village :</strong> {{ pv.village|default:'—' }}</p>
+                        <p><strong>Région :</strong> {{ pv.region|default:'—' }}</p>
+                        <p><strong>Département :</strong> {{ pv.departement|default:'—' }}</p>
+                        <p><strong>Sous-Préfecture :</strong> {{ pv.sous_prefecture|default:'—' }}</p>
+                    </div>
+                </div>
+
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <a href="{% url 'liste_villages' %}" class="btn btn-secondary btn-lg mr-3">
+                        <i class="fas fa-times mr-2"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fas fa-trash mr-2"></i> Confirmer la suppression
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

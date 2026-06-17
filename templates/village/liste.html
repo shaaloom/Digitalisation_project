@@ -1,0 +1,99 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <div class="panel-header bg-primary-gradient">
+        <div class="page-inner py-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                <div>
+                    <h2 class="text-white fw-bold">Liste des villages</h2>
+                    <h5 class="text-white op-7 mb-0">Tableau récapitulatif des procès-verbaux de village</h5>
+                </div>
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="{% url 'tableau_de_bord' %}" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-arrow-left mr-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-inner mt--4">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-head-row">
+                    <div class="card-title">Villages enregistrés</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="village-table" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Région</th>
+                                <th>Département</th>
+                                <th>Sous-Préfecture</th>
+                                <th>Village</th>
+                                <th>Détail</th>
+                                <th>Modifier</th>
+                                <th>Supprimer</th>
+                                <th>Rapport</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pv in pvs %}
+                            <tr>
+                                <td>{{ pv.region|default:'—' }}</td>
+                                <td>{{ pv.departement|default:'—' }}</td>
+                                <td>{{ pv.sous_prefecture|default:'—' }}</td>
+                                <td><strong>{{ pv.village|default:'—' }}</strong></td>
+                                <td>
+                                    <a href="{% url 'detail_village' pk=pv.id %}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Détail
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'modifier_village' pk=pv.id %}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'supprimer_village' pk=pv.id %}" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'rapport_pdf' pk=pv.id %}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-file-pdf"></i> Rapport
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">Aucun village enregistré</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extrajs %}
+<script src="{% static 'assets/js/plugin/datatables/datatables.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $('#village-table').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+        },
+        pageLength: 25,
+        order: [[3, 'asc']]
+    });
+});
+</script>
+{% endblock extrajs %}

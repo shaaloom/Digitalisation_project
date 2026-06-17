@@ -1,0 +1,91 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% include 'includes/dashboard-content.html' %}
+{% endblock content %}
+
+{% block extrajs %}
+<script src="{% static 'assets/js/plugin/chart.js/chart.min.js' %}"></script>
+<script src="{% static 'assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+    var totalVillages = {{ total_villages|default:0 }};
+    var withLitige = {{ with_litige|default:0 }};
+    var withChefTerre = {{ with_chef_terre|default:0 }};
+    var nrg = {{ nrg|default:0 }};
+    var ndp = {{ ndp|default:0 }};
+    var nsp = {{ nsp|default:0 }};
+
+    var chartColors = { primary: "#1572E8", success: "#31CE36", warning: "#FF9E27", danger: "#F25961", purple: "#6861CE" };
+
+    if ($('#myChart').length) {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Régions', 'Départements', 'Sous-Préfectures'],
+                datasets: [{
+                    label: 'Couverture géographique',
+                    data: [nrg, ndp, nsp],
+                    backgroundColor: [chartColors.primary, chartColors.success, chartColors.warning],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Couverture Géographique' }
+                }
+            }
+        });
+    }
+
+    if ($('#myChart2').length) {
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Avec litige', 'Sans litige'],
+                datasets: [{
+                    data: [withLitige, totalVillages - withLitige],
+                    backgroundColor: [chartColors.danger, chartColors.success],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Zones litigieuses' }
+                }
+            }
+        });
+    }
+
+    if ($('#mode_acces').length) {
+        var heritage = {{ heritage_count|default:0 }};
+        var don = {{ don_count|default:0 }};
+        var achat = {{ achat_count|default:0 }};
+        var location = {{ location_count|default:0 }};
+        var ctx3 = document.getElementById('mode_acces').getContext('2d');
+        new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: ['Héritage', 'Don', 'Achat', 'Location'],
+                datasets: [{
+                    data: [heritage, don, achat, location],
+                    backgroundColor: [chartColors.primary, chartColors.success, chartColors.warning, chartColors.purple],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: "Modes d'accès à la terre" }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock extrajs %}

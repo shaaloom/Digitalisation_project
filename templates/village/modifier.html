@@ -1,0 +1,546 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block sidebar_class %}sidebar sidebar-style-2{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="panel-header bg-warning-gradient">
+        <div class="page-inner py-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                <div>
+                    <h2 class="text-white fw-bold">Modifier le village : {{ pv.village }}</h2>
+                    <h5 class="text-white op-7 mb-0">Modification des informations du procès-verbal</h5>
+                </div>
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="{% url 'liste_villages' %}" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-arrow-left mr-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-inner mt--4">
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle mr-2"></i> {{ success }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i> {{ error }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+
+        <form method="post" id="pvForm">
+            {% csrf_token %}
+
+            <!-- SECTION 1 : ADMINISTRATIF -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secAdmin" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-map-marked-alt text-primary mr-2"></i> Informations administratives</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse show" id="secAdmin">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Région</label>
+                                    <input type="text" class="form-control" name="region" value="{{ pv.region|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Département</label>
+                                    <input type="text" class="form-control" name="departement" value="{{ pv.departement|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Sous-Préfecture</label>
+                                    <input type="text" class="form-control" name="sous_prefecture" value="{{ pv.sous_prefecture|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Village</label>
+                                    <input type="text" class="form-control" name="village" value="{{ pv.village|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Commissaire enquêteur</label>
+                                    <input type="text" class="form-control" name="commissaire_enqueteur" value="{{ pv.commissaire_enqueteur|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Date d'enquête</label>
+                                    <input type="date" class="form-control" name="date_enquete" value="{{ pv.date_enquete|date:'Y-m-d'|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : DÉCLARANT -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secDeclarant" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-user text-success mr-2"></i> Déclarant</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secDeclarant">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" class="form-control" name="declarant_nom" value="{{ pv.declarant.nom|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Prénom</label>
+                                    <input type="text" class="form-control" name="declarant_prenom" value="{{ pv.declarant.prenom|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Date de naissance</label>
+                                    <input type="date" class="form-control" name="declarant_date_naissance" value="{{ pv.declarant.date_naissance|date:'Y-m-d'|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Lieu de naissance</label>
+                                    <input type="text" class="form-control" name="declarant_lieu_naissance" value="{{ pv.declarant.lieu_naissance|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Qualité</label>
+                                    <input type="text" class="form-control" name="declarant_qualite" value="{{ pv.declarant.qualite|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Résidence</label>
+                                    <input type="text" class="form-control" name="declarant_residence" value="{{ pv.declarant.residence|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3 : HISTORIQUE -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secHistorique" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-history text-info mr-2"></i> Historique du village</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secHistorique">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Signification du nom</label>
+                                    <input type="text" class="form-control" name="signification_nom" value="{{ pv.historique.signification_nom|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Fondateur</label>
+                                    <input type="text" class="form-control" name="fondateur" value="{{ pv.historique.fondateur|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Activité du fondateur</label>
+                                    <input type="text" class="form-control" name="activite_fondateur" value="{{ pv.historique.activite_fondateur|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Lieu d'inhumation</label>
+                                    <input type="text" class="form-control" name="lieu_inhumation" value="{{ pv.historique.lieu_inhumation|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Origine du fondateur</label>
+                                    <input type="text" class="form-control" name="origine_fondateur" value="{{ pv.historique.origine_fondateur|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Personnes trouvées sur place</label>
+                                    <input type="text" class="form-control" name="personnes_trouvees" value="{{ pv.historique.personnes_trouvees_sur_place|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Accords avec les populations</label>
+                                    <input type="text" class="form-control" name="accords_populations" value="{{ pv.historique.accords_avec_populations|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Époque d'installation</label>
+                                    <input type="text" class="form-control" name="epoque_installation" value="{{ pv.historique.epoque_installation|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h5>Lignages</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Nom du lignage</th><th>Ordre d'arrivée</th><th></th></tr></thead>
+                                <tbody id="lignage-container">
+                                    {% for lig in pv.historique.lignages %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="lignage_nom[]" value="{{ lig.nom_lignage|default:'' }}"></td>
+                                        <td><input type="number" class="form-control" name="lignage_ordre[]" value="{{ lig.ordre_arrivee|default:'' }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="lignage_nom[]"></td>
+                                        <td><input type="number" class="form-control" name="lignage_ordre[]"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm btn-info" onclick="addRow('lignage-container', ['lignage_nom[]', 'lignage_ordre[]'])">+ Ajouter</button>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Villages voisins (séparés par des virgules)</label>
+                                    <input type="text" class="form-control" name="villages_voisins" value="{{ pv.historique.villages_voisins|join:', '|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Regroupement de villages (séparés par des virgules)</label>
+                                    <input type="text" class="form-control" name="regroupement_villages" value="{{ pv.historique.regroupement_villages|join:', '|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4 : CHEFS -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secChefs" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-crown text-warning mr-2"></i> Chefs du village</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secChefs">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Nom</th><th>Prénom</th><th>Début règne</th><th>Fin règne</th><th></th></tr></thead>
+                                <tbody id="chef-container">
+                                    {% for c in pv.chefs %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="chef_nom[]" value="{{ c.nom|default:'' }}"></td>
+                                        <td><input type="text" class="form-control" name="chef_prenom[]" value="{{ c.prenom|default:'' }}"></td>
+                                        <td><input type="date" class="form-control" name="chef_debut_regne[]" value="{{ c.debut_regne|date:'Y-m-d'|default:'' }}"></td>
+                                        <td><input type="date" class="form-control" name="chef_fin_regne[]" value="{{ c.fin_regne|date:'Y-m-d'|default:'' }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="chef_nom[]"></td>
+                                        <td><input type="text" class="form-control" name="chef_prenom[]"></td>
+                                        <td><input type="date" class="form-control" name="chef_debut_regne[]"></td>
+                                        <td><input type="date" class="form-control" name="chef_fin_regne[]"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm btn-info" onclick="addRow('chef-container', ['chef_nom[]', 'chef_prenom[]', 'chef_debut_regne[]', 'chef_fin_regne[]'])">+ Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5 : CAMPEMENTS -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secCampements" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-tent text-secondary mr-2"></i> Campements</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secCampements">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Nom</th><th>Origine population</th><th></th></tr></thead>
+                                <tbody id="campement-container">
+                                    {% for c in pv.campements %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="campement_nom[]" value="{{ c.nom|default:'' }}"></td>
+                                        <td><input type="text" class="form-control" name="campement_origine[]" value="{{ c.origine_population|default:'' }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="campement_nom[]"></td>
+                                        <td><input type="text" class="form-control" name="campement_origine[]"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm btn-info" onclick="addRow('campement-container', ['campement_nom[]', 'campement_origine[]'])">+ Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6 : SITES ADORATION -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secSites" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-place-of-worship text-danger mr-2"></i> Sites sacrés</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secSites">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Type</th><th>Localisation</th><th></th></tr></thead>
+                                <tbody id="site-container">
+                                    {% for s in pv.sites_adoration %}
+                                    <tr class="dynamic-row">
+                                        <td>
+                                            <select class="form-control" name="site_type[]">
+                                                <option value="">-- Choisir --</option>
+                                                <option value="forêt" {% if s.type_site == 'forêt' %}selected{% endif %}>Forêt</option>
+                                                <option value="colline" {% if s.type_site == 'colline' %}selected{% endif %}>Colline</option>
+                                                <option value="rivière" {% if s.type_site == 'rivière' %}selected{% endif %}>Rivière</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" name="site_localisation[]" value="{{ s.localisation|default:'' }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="dynamic-row">
+                                        <td>
+                                            <select class="form-control" name="site_type[]">
+                                                <option value="">-- Choisir --</option>
+                                                <option value="forêt">Forêt</option>
+                                                <option value="colline">Colline</option>
+                                                <option value="rivière">Rivière</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" name="site_localisation[]"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm btn-info" onclick="addRow('site-container', ['site_type[]', 'site_localisation[]'])">+ Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 7 : LIMITES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secLimites" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-border-all text-primary mr-2"></i> Limites territoriales</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secLimites">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Description</th><th></th></tr></thead>
+                                <tbody id="limite-container">
+                                    {% for l in pv.limites %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="limite_description[]" value="{{ l.description|default:'' }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="limite_description[]"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm btn-info" onclick="addRow('limite-container', ['limite_description[]'])">+ Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 8 : MODE ACCÈS TERRE -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secAcces" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-tree text-success mr-2"></i> Mode d'accès à la terre</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secAcces">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Mode d'accès principal</label>
+                            <select class="form-control" name="mode_acces_principal">
+                                <option value="">-- Choisir --</option>
+                                <option value="heritage" {% if pv.modes_acces_terre.heritage %}selected{% endif %}>Héritage</option>
+                                <option value="don" {% if pv.modes_acces_terre.don %}selected{% endif %}>Don</option>
+                                <option value="pret" {% if pv.modes_acces_terre.pret %}selected{% endif %}>Prêt</option>
+                                <option value="achat" {% if pv.modes_acces_terre.achat %}selected{% endif %}>Achat</option>
+                                <option value="location" {% if pv.modes_acces_terre.location %}selected{% endif %}>Location</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Chef de terre</label>
+                                    <select class="form-control" name="chef_de_terre">
+                                        <option value="non" {% if not pv.chef_de_terre %}selected{% endif %}>Non</option>
+                                        <option value="oui" {% if pv.chef_de_terre %}selected{% endif %}>Oui</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Zones litigieuses</label>
+                                    <select class="form-control" name="zones_litigieuses">
+                                        <option value="non" {% if not pv.zones_litigieuses %}selected{% endif %}>Non</option>
+                                        <option value="oui" {% if pv.zones_litigieuses %}selected{% endif %}>Oui</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 9 : INFOS COMPLÉMENTAIRES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secComplement" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-info-circle text-secondary mr-2"></i> Informations complémentaires</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secComplement">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <textarea class="form-control" name="informations_complementaires" rows="4">{{ pv.informations_complementaires|default:'' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 10 : PERSONNES PRÉSENTES -->
+            <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#secPersonnes" style="cursor:pointer;">
+                    <div class="card-head-row">
+                        <div class="card-title"><i class="fas fa-users text-info mr-2"></i> Personnes présentes</div>
+                        <div class="card-tools"><i class="fas fa-chevron-down text-muted"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="secPersonnes">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Nom</th><th>Prénom</th><th>Qualité</th><th>Âge</th><th>Résidence</th><th>Signature</th><th></th></tr></thead>
+                                <tbody id="personne-container">
+                                    {% for p in pv.personnes_presentes %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="personne_nom[]" value="{{ p.nom|default:'' }}"></td>
+                                        <td><input type="text" class="form-control" name="personne_prenom[]" value="{{ p.prenom|default:'' }}"></td>
+                                        <td><input type="text" class="form-control" name="personne_qualite[]" value="{{ p.qualite|default:'' }}"></td>
+                                        <td><input type="number" class="form-control" name="personne_age[]" value="{{ p.age|default:'' }}"></td>
+                                        <td><input type="text" class="form-control" name="personne_residence[]" value="{{ p.lieu_residence|default:'' }}"></td>
+                                        <td><input type="text" class="form-control" name="personne_signature[]" value="{{ p.signature|default:'' }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="dynamic-row">
+                                        <td><input type="text" class="form-control" name="personne_nom[]"></td>
+                                        <td><input type="text" class="form-control" name="personne_prenom[]"></td>
+                                        <td><input type="text" class="form-control" name="personne_qualite[]"></td>
+                                        <td><input type="number" class="form-control" name="personne_age[]"></td>
+                                        <td><input type="text" class="form-control" name="personne_residence[]"></td>
+                                        <td><input type="text" class="form-control" name="personne_signature[]"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm btn-info" onclick="addRow('personne-container', ['personne_nom[]', 'personne_prenom[]', 'personne_qualite[]', 'personne_age[]', 'personne_residence[]', 'personne_signature[]'])">+ Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3 mb-5">
+                <button type="submit" class="btn btn-warning btn-lg">
+                    <i class="fas fa-save mr-2"></i> Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extrajs %}
+<script>
+function addRow(containerId, fieldNames) {
+    var container = document.getElementById(containerId);
+    var template = container.querySelector('.dynamic-row');
+    var newRow = template.cloneNode(true);
+    var inputs = newRow.querySelectorAll('input, select');
+    inputs.forEach(function(input) { input.value = ''; });
+    container.appendChild(newRow);
+}
+
+function removeRow(btn) {
+    var row = btn.closest('tr');
+    var container = row.closest('tbody');
+    var rows = container.querySelectorAll('.dynamic-row');
+    if (rows.length <= 1) {
+        var inputs = row.querySelectorAll('input, select');
+        inputs.forEach(function(input) { input.value = ''; });
+        if (row.querySelector('select')) {
+            row.querySelectorAll('select').forEach(function(sel) { sel.selectedIndex = 0; });
+        }
+        return;
+    }
+    row.parentNode.removeChild(row);
+}
+</script>
+{% endblock extrajs %}

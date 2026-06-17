@@ -1,0 +1,225 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <div class="panel-header bg-info-gradient">
+        <div class="page-inner py-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                <div>
+                    <h2 class="text-white fw-bold">Détail du village : {{ pv.village }}</h2>
+                    <h5 class="text-white op-7 mb-0">{{ pv.departement|default:'' }} / {{ pv.sous_prefecture|default:'' }}</h5>
+                </div>
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="{% url 'liste_villages' %}" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-arrow-left mr-1"></i> Retour
+                    </a>
+                    <a href="{% url 'modifier_village' pk=pv.id %}" class="btn btn-warning btn-border btn-round mr-2">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    <a href="{% url 'rapport_pdf' pk=pv.id %}" class="btn btn-success btn-border btn-round">
+                        <i class="fas fa-file-pdf"></i> Rapport PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-inner mt--4">
+        <!-- ADMINISTRATIF -->
+        <div class="card">
+            <div class="card-header"><div class="card-title">Informations administratives</div></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4"><strong>Région :</strong> {{ pv.region|default:'—' }}</div>
+                    <div class="col-md-4"><strong>Département :</strong> {{ pv.departement|default:'—' }}</div>
+                    <div class="col-md-4"><strong>Sous-Préfecture :</strong> {{ pv.sous_prefecture|default:'—' }}</div>
+                    <div class="col-md-4 mt-2"><strong>Village :</strong> {{ pv.village|default:'—' }}</div>
+                    <div class="col-md-4 mt-2"><strong>Commissaire enquêteur :</strong> {{ pv.commissaire_enqueteur|default:'—' }}</div>
+                    <div class="col-md-4 mt-2"><strong>Date d'enquête :</strong> {{ pv.date_enquete|default:'—' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DÉCLARANT -->
+        {% if pv.declarant %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Déclarant</div></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4"><strong>Nom :</strong> {{ pv.declarant.nom|default:'—' }}</div>
+                    <div class="col-md-4"><strong>Prénom :</strong> {{ pv.declarant.prenom|default:'—' }}</div>
+                    <div class="col-md-4"><strong>Date naissance :</strong> {{ pv.declarant.date_naissance|default:'—' }}</div>
+                    <div class="col-md-4 mt-2"><strong>Lieu naissance :</strong> {{ pv.declarant.lieu_naissance|default:'—' }}</div>
+                    <div class="col-md-4 mt-2"><strong>Qualité :</strong> {{ pv.declarant.qualite|default:'—' }}</div>
+                    <div class="col-md-4 mt-2"><strong>Résidence :</strong> {{ pv.declarant.residence|default:'—' }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- HISTORIQUE -->
+        {% if pv.historique %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Historique du village</div></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6"><strong>Signification du nom :</strong> {{ pv.historique.signification_nom|default:'—' }}</div>
+                    <div class="col-md-6"><strong>Fondateur :</strong> {{ pv.historique.fondateur|default:'—' }}</div>
+                    <div class="col-md-6 mt-2"><strong>Activité du fondateur :</strong> {{ pv.historique.activite_fondateur|default:'—' }}</div>
+                    <div class="col-md-6 mt-2"><strong>Lieu d'inhumation :</strong> {{ pv.historique.lieu_inhumation|default:'—' }}</div>
+                    <div class="col-md-6 mt-2"><strong>Origine du fondateur :</strong> {{ pv.historique.origine_fondateur|default:'—' }}</div>
+                    <div class="col-md-6 mt-2"><strong>Personnes trouvées :</strong> {{ pv.historique.personnes_trouvees_sur_place|default:'—' }}</div>
+                    <div class="col-md-6 mt-2"><strong>Accords avec populations :</strong> {{ pv.historique.accords_avec_populations|default:'—' }}</div>
+                    <div class="col-md-6 mt-2"><strong>Époque installation :</strong> {{ pv.historique.epoque_installation|default:'—' }}</div>
+                </div>
+                {% if pv.historique.lignages %}
+                <hr>
+                <h5>Lignages</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>N°</th><th>Nom</th><th>Ordre arrivée</th></tr></thead>
+                        <tbody>
+                            {% for lig in pv.historique.lignages %}
+                            <tr><td>{{ forloop.counter }}</td><td>{{ lig.nom_lignage }}</td><td>{{ lig.ordre_arrivee|default:'—' }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                {% if pv.historique.villages_voisins %}
+                <hr>
+                <h5>Villages voisins</h5>
+                <p>{{ pv.historique.villages_voisins|join:', ' }}</p>
+                {% endif %}
+                {% if pv.historique.regroupement_villages %}
+                <h5>Regroupements</h5>
+                <p>{{ pv.historique.regroupement_villages|join:', ' }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- CHEFS -->
+        {% if pv.chefs %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Chefs du village</div></div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>N°</th><th>Nom</th><th>Prénom</th><th>Début règne</th><th>Fin règne</th></tr></thead>
+                        <tbody>
+                            {% for c in pv.chefs %}
+                            <tr><td>{{ forloop.counter }}</td><td>{{ c.nom }}</td><td>{{ c.prenom }}</td><td>{{ c.debut_regne|default:'—' }}</td><td>{{ c.fin_regne|default:'—' }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- CAMPEMENTS -->
+        {% if pv.campements %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Campements</div></div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>N°</th><th>Nom</th><th>Origine population</th></tr></thead>
+                        <tbody>
+                            {% for c in pv.campements %}
+                            <tr><td>{{ forloop.counter }}</td><td>{{ c.nom }}</td><td>{{ c.origine_population|default:'—' }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SITES ADORATION -->
+        {% if pv.sites_adoration %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Sites sacrés</div></div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>N°</th><th>Type</th><th>Localisation</th></tr></thead>
+                        <tbody>
+                            {% for s in pv.sites_adoration %}
+                            <tr><td>{{ forloop.counter }}</td><td>{{ s.type_site }}</td><td>{{ s.localisation|default:'—' }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- LIMITES -->
+        {% if pv.limites %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Limites territoriales</div></div>
+            <div class="card-body">
+                <ul>
+                    {% for l in pv.limites %}
+                    <li>{{ l.description }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- MODE ACCÈS TERRE -->
+        {% if pv.modes_acces_terre %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Mode d'accès à la terre</div></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2"><span class="badge {% if pv.modes_acces_terre.heritage %}badge-success{% else %}badge-secondary{% endif %}">Héritage</span></div>
+                    <div class="col-md-2"><span class="badge {% if pv.modes_acces_terre.don %}badge-success{% else %}badge-secondary{% endif %}">Don</span></div>
+                    <div class="col-md-2"><span class="badge {% if pv.modes_acces_terre.pret %}badge-success{% else %}badge-secondary{% endif %}">Prêt</span></div>
+                    <div class="col-md-2"><span class="badge {% if pv.modes_acces_terre.achat %}badge-success{% else %}badge-secondary{% endif %}">Achat</span></div>
+                    <div class="col-md-2"><span class="badge {% if pv.modes_acces_terre.location %}badge-success{% else %}badge-secondary{% endif %}">Location</span></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- INFOS COMPLÉMENTAIRES -->
+        <div class="card">
+            <div class="card-header"><div class="card-title">Informations complémentaires</div></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6"><strong>Chef de terre :</strong> {{ pv.chef_de_terre|yesno:'Oui,Non' }}</div>
+                    <div class="col-md-6"><strong>Zones litigieuses :</strong> {{ pv.zones_litigieuses|yesno:'Oui,Non' }}</div>
+                </div>
+                {% if pv.informations_complementaires %}
+                <hr>
+                <p>{{ pv.informations_complementaires }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- PERSONNES PRÉSENTES -->
+        {% if pv.personnes_presentes %}
+        <div class="card">
+            <div class="card-header"><div class="card-title">Personnes présentes</div></div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>N°</th><th>Nom</th><th>Prénom</th><th>Qualité</th><th>Âge</th><th>Résidence</th><th>Signature</th></tr></thead>
+                        <tbody>
+                            {% for p in pv.personnes_presentes %}
+                            <tr><td>{{ forloop.counter }}</td><td>{{ p.nom }}</td><td>{{ p.prenom|default:'—' }}</td><td>{{ p.qualite|default:'—' }}</td><td>{{ p.age|default:'—' }}</td><td>{{ p.lieu_residence|default:'—' }}</td><td>{{ p.signature|default:'—' }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
