@@ -3,86 +3,196 @@
 
 {% block content %}
     {% include 'includes/dashboard-content.html' %}
+    <span id="dashboard-data" style="display:none"
+          data-total-villages="{{ total_villages }}"
+          data-chef-terre="{{ chef_terre }}"
+          data-with-litige="{{ with_litige }}"
+          data-heritage="{{ heritage_count }}"
+          data-don="{{ don_count }}"
+          data-achat="{{ achat_count }}"
+          data-location="{{ location_count }}"
+          data-avant-1960="{{ avant_1960 }}"
+          data-apres-1960="{{ apres_1960 }}"></span>
 {% endblock content %}
 
 {% block extrajs %}
-<script src="{% static 'assets/js/plugin/chart.js/chart.min.js' %}"></script>
-<script src="{% static 'assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js' %}"></script>
 <script>
 $(document).ready(function() {
-    var totalVillages = {{ total_villages|default:0 }};
-    var withLitige = {{ with_litige|default:0 }};
-    var withChefTerre = {{ with_chef_terre|default:0 }};
-    var nrg = {{ nrg|default:0 }};
-    var ndp = {{ ndp|default:0 }};
-    var nsp = {{ nsp|default:0 }};
+    var el = document.getElementById('dashboard-data');
+    var data = {
+        totalVillages: parseInt(el.getAttribute('data-total-villages')) || 0,
+        chefTerre: parseInt(el.getAttribute('data-chef-terre')) || 0,
+        withLitige: parseInt(el.getAttribute('data-with-litige')) || 0,
+        heritage: parseInt(el.getAttribute('data-heritage')) || 0,
+        don: parseInt(el.getAttribute('data-don')) || 0,
+        achat: parseInt(el.getAttribute('data-achat')) || 0,
+        location: parseInt(el.getAttribute('data-location')) || 0,
+        avant1960: parseInt(el.getAttribute('data-avant-1960')) || 0,
+        apres1960: parseInt(el.getAttribute('data-apres-1960')) || 0
+    };
 
     var chartColors = { primary: "#1572E8", success: "#31CE36", warning: "#FF9E27", danger: "#F25961", purple: "#6861CE" };
 
     if ($('#myChart').length) {
-        var ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
+        var regionLabels = {{ region_labels|safe }};
+        var regionValues = {{ region_values|safe }};
+        new Chart(document.getElementById('myChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: ['Régions', 'Départements', 'Sous-Préfectures'],
+                labels: regionLabels,
                 datasets: [{
-                    label: 'Couverture géographique',
-                    data: [nrg, ndp, nsp],
-                    backgroundColor: [chartColors.primary, chartColors.success, chartColors.warning],
+                    label: 'Nombre de villages',
+                    data: regionValues,
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.success,
+                        chartColors.warning,
+                        chartColors.danger,
+                        chartColors.purple,
+                        '#2ecc71',
+                        '#e67e22',
+                        '#1abc9c',
+                        '#e74c3c',
+                        '#3498db',
+                        '#9b59b6',
+                        '#f1c40f'
+                    ],
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: { display: true, text: 'Couverture Géographique' }
+                legend: { display: false },
+                title: { display: true, text: 'Nombre de villages par région' },
+                scales: {
+                    yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }]
                 }
+            }
+        });
+    }
+
+    if ($('#mise_a_disp').length) {
+        new Chart(document.getElementById('mise_a_disp').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Avec chef de terre', 'Sans chef de terre'],
+                datasets: [{
+                    label: 'Nombre de villages',
+                    data: [data.chefTerre, data.totalVillages - data.chefTerre],
+                    backgroundColor: [chartColors.success, chartColors.danger],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: { display: false },
+                title: { display: true, text: 'Présence de chef de terre' },
+                scales: {
+                    yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }]
+                }
+            }
+        });
+    }
+
+    if ($('#epin').length) {
+        var siteLabels = {{ site_labels|safe }};
+        var siteValues = {{ site_values|safe }};
+        new Chart(document.getElementById('epin').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: siteLabels,
+                datasets: [{
+                    label: "Nombre de sites d'adoration",
+                    data: siteValues,
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.success,
+                        chartColors.warning,
+                        chartColors.danger,
+                        chartColors.purple,
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: { display: false },
+                title: { display: true, text: "Type de sites d'adoration" },
+                scales: {
+                    yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }]
+                }
+            }
+        });
+    }
+
+    if ($('#personnetrouve').length) {
+        var qualiteLabels = {{ qualite_labels|safe }};
+        var qualiteValues = {{ qualite_values|safe }};
+        var colors = [chartColors.primary, chartColors.success, chartColors.warning, chartColors.danger, chartColors.purple, '#2ecc71', '#e67e22'];
+        new Chart(document.getElementById('personnetrouve').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: qualiteLabels,
+                datasets: [{
+                    data: qualiteValues,
+                    backgroundColor: colors.slice(0, qualiteLabels.length),
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Qualité du déclarant' }
+            }
+        });
+    }
+
+    if ($('#quald').length) {
+        new Chart(document.getElementById('quald').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Avant 1960', 'Après 1960'],
+                datasets: [{
+                    data: [data.avant1960, data.apres1960],
+                    backgroundColor: [chartColors.primary, chartColors.success],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: { position: 'bottom' },
+                title: { display: true, text: "Époque d'installation" }
             }
         });
     }
 
     if ($('#myChart2').length) {
-        var ctx2 = document.getElementById('myChart2').getContext('2d');
-        new Chart(ctx2, {
+        new Chart(document.getElementById('myChart2').getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: ['Avec litige', 'Sans litige'],
                 datasets: [{
-                    data: [withLitige, totalVillages - withLitige],
+                    data: [data.withLitige, data.totalVillages - data.withLitige],
                     backgroundColor: [chartColors.danger, chartColors.success],
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    title: { display: true, text: 'Zones litigieuses' }
-                }
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Zones litigieuses' }
             }
         });
     }
 
     if ($('#mode_acces').length) {
-        var heritage = {{ heritage_count|default:0 }};
-        var don = {{ don_count|default:0 }};
-        var achat = {{ achat_count|default:0 }};
-        var location = {{ location_count|default:0 }};
-        var ctx3 = document.getElementById('mode_acces').getContext('2d');
-        new Chart(ctx3, {
+        new Chart(document.getElementById('mode_acces').getContext('2d'), {
             type: 'pie',
             data: {
                 labels: ['Héritage', 'Don', 'Achat', 'Location'],
                 datasets: [{
-                    data: [heritage, don, achat, location],
+                    data: [data.heritage, data.don, data.achat, data.location],
                     backgroundColor: [chartColors.primary, chartColors.success, chartColors.warning, chartColors.purple],
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    title: { display: true, text: "Modes d'accès à la terre" }
-                }
+                legend: { position: 'bottom' },
+                title: { display: true, text: "Modes d'accès à la terre" }
             }
         });
     }

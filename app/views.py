@@ -1,3 +1,5 @@
+import json, re
+from collections import Counter
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from datetime import date, datetime
@@ -115,6 +117,10 @@ def tableau_de_bord(request):
     ndp = len(set(pv.departement for pv in pvs if pv.departement))
     nsp = len(set(pv.sous_prefecture for pv in pvs if pv.sous_prefecture))
 
+    region_counts = Counter(pv.region for pv in pvs if pv.region)
+    region_labels = json.dumps(list(region_counts.keys()))
+    region_values = json.dumps(list(region_counts.values()))
+
     with_litige = sum(1 for pv in pvs if pv.zones_litigieuses)
     chef_terre = sum(1 for pv in pvs if pv.chef_de_terre)
 
@@ -137,6 +143,43 @@ def tableau_de_bord(request):
     liennul = round((lien / total * 100), 1) if total else 0
 
     chefoui = round((chef_terre / total * 100), 1) if total else 0
+
+    # Qualité des déclarants
+    qualite_counts = Counter(
+        pv.declarant.qualite for pv in pvs
+        if pv.declarant and pv.declarant.qualite
+    )
+    qualite_labels = json.dumps(list(qualite_counts.keys()))
+    qualite_values = json.dumps(list(qualite_counts.values()))
+
+    # Époque d'installation (avant/après 1960)
+    avant_1960 = 0
+    apres_1960 = 0
+    siecles_anciens = ['xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix']
+    for pv in pvs:
+        if pv.historique and pv.historique.epoque_installation:
+            txt = pv.historique.epoque_installation.lower()
+            match = re.search(r'(\d{4})', txt)
+            if match:
+                annee = int(match.group(1))
+                if annee < 1960:
+                    avant_1960 += 1
+                else:
+                    apres_1960 += 1
+            elif any(s in txt for s in siecles_anciens):
+                avant_1960 += 1
+            else:
+                avant_1960 += 1
+
+    # Types de sites d'adoration
+    site_counts = Counter(
+        s.type_site for pv in pvs
+        if pv.sites_adoration
+        for s in pv.sites_adoration
+        if s.type_site
+    )
+    site_labels = json.dumps(list(site_counts.keys()))
+    site_values = json.dumps(list(site_counts.values()))
 
     # Modes d'accès à la terre
     heritage_count = sum(1 for pv in pvs if pv.modes_acces_terre and pv.modes_acces_terre.heritage)
@@ -164,6 +207,14 @@ def tableau_de_bord(request):
         'nom': request.session.get('nom'),
         'prenom': request.session.get('prenom'),
         'regions': regions,
+        'region_labels': region_labels,
+        'region_values': region_values,
+        'qualite_labels': qualite_labels,
+        'qualite_values': qualite_values,
+        'site_labels': site_labels,
+        'site_values': site_values,
+        'avant_1960': avant_1960,
+        'apres_1960': apres_1960,
     }
     return render(request, 'tableau-de-bord.html', context)
 
