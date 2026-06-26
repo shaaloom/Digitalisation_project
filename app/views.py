@@ -917,3 +917,4 @@ def creer_pv(request):
         'prenom': request.session.get('prenom'),
     }
     return render(request, 'pv/create.html', context)
+    #vue
